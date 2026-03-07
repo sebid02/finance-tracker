@@ -1,4 +1,5 @@
 import StatCard from "@/app/components/ui/stat-card";
+import MonthlyChart from "@/app/components/ui/dashboard/monthly-chart";
 import RecentTransactions from "@/app/components/ui/dashboard/recent-transactions";
 
 const stats = [
@@ -25,8 +26,14 @@ export default function Home() {
         ))}
       </div>
 
+      <span className="text-lg font-bold">Analytics</span>
+
       {/* Separator */}
-      <div className="border-b border-cyan-900 mb-5"></div>
+      <div className="border-b border-cyan-900 mt-1 mb-5"></div>
+
+      {/* Chart */}
+
+      <MonthlyChart />
 
       {/* Recent Transactions Section */}
       <span className="text-lg font-bold">Recent Transactions</span>
