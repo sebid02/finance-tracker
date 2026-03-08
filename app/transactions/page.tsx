@@ -56,7 +56,8 @@ export default function Transactions() {
               </thead>
 
               <tbody className="divide-y divide-cyan-900/30">
-                {filteredTransactions.map((t) => {
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((t) => {
                   const isIncome = t.type === "income";
                   return (
                     <tr
@@ -88,7 +89,21 @@ export default function Transactions() {
                       </td>
                     </tr>
                   );
-                })}
+                })
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-4 py-10 text-center">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-sm font-semibold text-gray-200">
+                        No transactions found.
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        Try a different search term.
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
               </tbody>
             </table>
           </div>
