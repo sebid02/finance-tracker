@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const transactions = [
   { id: 1, date: "Mar 6, 2026", description: "Salary", category: "Income", type: "income", amount: 3000 },
   { id: 2, date: "Mar 5, 2026", description: "Groceries", category: "Food", type: "expense", amount: 42 },
@@ -18,11 +22,19 @@ function Badge({ children } : {children : React.ReactNode}) {
 }
 
 export default function Transactions() {
+    const [search, setSearch] = useState("");
+    const filteredTransactions = transactions.filter((t) => t.description.toLowerCase().includes(search.toLowerCase()));
+
     return (
       <div className="py-6">
         <span className="text-lg font-bold">Transactions</span>
         <div className="flex justify-between items-center mt-2 mb-2">
-          <input className="w-60 rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-sm outline-none transition" placeholder="Search transactions..." type="text" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-60 rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-sm outline-none transition"
+            placeholder="Search transactions..."
+            type="text" />
           <button className="rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-[14px] cursor-pointer">
             Add transaction
           </button>
@@ -44,7 +56,7 @@ export default function Transactions() {
               </thead>
 
               <tbody className="divide-y divide-cyan-900/30">
-                {transactions.map((t) => {
+                {filteredTransactions.map((t) => {
                   const isIncome = t.type === "income";
                   return (
                     <tr
