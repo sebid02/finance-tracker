@@ -24,12 +24,34 @@ function Badge({ children } : {children : React.ReactNode}) {
 export default function Transactions() {
     const [search, setSearch] = useState("");
     const [filterType, setFilterType] = useState("all");
+    const [sortType, setSortType] = useState("date_desc");
+
     const filteredTransactions = transactions.filter((t) => {
       const matchesSearch = t.description.toLowerCase().includes(search.toLowerCase());
       const matchesType = filterType === "all" || t.type === filterType;
 
       return matchesSearch && matchesType;
     });
+
+    const sortedTransactions = [...filteredTransactions].sort((a, b) => {
+      if (sortType === "date_desc") {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+
+      if (sortType === "date_asc") {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+
+      if (sortType === "amount_desc") {
+        return b.amount - a.amount;
+      }
+
+      if (sortType === "amount_asc") {
+        return a.amount - b.amount;
+      }
+
+      return 0;
+    })
 
     return (
       <div className="py-6">
@@ -51,6 +73,16 @@ export default function Transactions() {
               <option className="rounded-lg bg-cyan-900/40" value="all">All types</option>
               <option className="bg-cyan-900/40" value="income">Income</option>
               <option className="bg-cyan-900/40" value="expense">Expense</option>
+            </select>
+            <select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value)}
+              className="rounded-lg w-35 border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-[14px] cursor-pointer outline-none"
+            >
+              <option className="rounded-lg bg-cyan-900/40" value="date_desc">Date (newest)</option>
+              <option className="bg-cyan-900/40" value="date_asc">Date (oldest)</option>
+              <option className="bg-cyan-900/40" value="amount_desc">Amount (high - low)</option>
+              <option className="bg-cyan-900/40" value="amount_asc">Amount (low - high)</option>
             </select>
             <button className="rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-[14px] cursor-pointer">
                 Add transaction
@@ -74,8 +106,8 @@ export default function Transactions() {
               </thead>
 
               <tbody className="divide-y divide-cyan-900/30">
-                {filteredTransactions.length > 0 ? (
-                  filteredTransactions.map((t) => {
+                {sortedTransactions.length > 0 ? (
+                  sortedTransactions.map((t) => {
                   const isIncome = t.type === "income";
                   return (
                     <tr
