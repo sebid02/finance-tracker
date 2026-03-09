@@ -25,6 +25,7 @@ export default function Transactions() {
     const [search, setSearch] = useState("");
     const [filterType, setFilterType] = useState("all");
     const [sortType, setSortType] = useState("date_desc");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const filteredTransactions = transactions.filter((t) => {
       const matchesSearch = t.description.toLowerCase().includes(search.toLowerCase());
@@ -84,8 +85,11 @@ export default function Transactions() {
               <option className="bg-cyan-900/40" value="amount_desc">Amount (high - low)</option>
               <option className="bg-cyan-900/40" value="amount_asc">Amount (low - high)</option>
             </select>
-            <button className="rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-[14px] cursor-pointer">
-                Add transaction
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg border border-cyan-900 bg-cyan-900/40 hover:bg-cyan-900/20 py-1 px-2 text-[14px] cursor-pointer"
+            >
+              Add transaction
             </button>
           </div>
         </div>
@@ -158,67 +162,70 @@ export default function Transactions() {
             </table>
           </div>
         </div>
+        
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+            <div className="w-full max-w-md rounded-lg border border-cyan-900/50 bg-cyan-950 p-5 shadow-lg">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white">Add transaction</h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-400 hover:text-white transition cursor-pointer"
+                >
+                  X
+                </button>
+              </div>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Description</label>
+                  <input
+                    type="text"
+                    placeholder="Enter description"
+                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Category</label>
+                  <input
+                    type="text"
+                    placeholder="Enter category"
+                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Type</label>
+                  <select className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none">
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Date</label>
+                  <input
+                    type="date"
+                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
+                  />
+                </div>
+              </div>
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="w-full max-w-md rounded-lg border border-cyan-900/50 bg-cyan-950 p-5 shadow-lg">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Add transaction</h2>
-              <button
-                className="text-gray-400 hover:text-white transition cursor-pointer"
-              >
-                X
-              </button>
-            </div>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="mb-1 block text-sm text-gray-300">Description</label>
-                <input
-                  type="text"
-                  placeholder="Enter description"
-                  className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                />
+              <div className="mt-5 flex justify-center">
+                <button
+                  className="rounded-lg border border-cyan-900 bg-cyan-900/40 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-900/20 transition cursor-pointer"
+                >
+                  Add transaction
+                </button>
               </div>
-              <div>
-                <label className="mb-1 block text-sm text-gray-300">Category</label>
-                <input
-                  type="text"
-                  placeholder="Enter category"
-                  className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm text-gray-300">Type</label>
-                <select className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none">
-                  <option value="income">Income</option>
-                  <option value="expense">Expense</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-1 block text-sm text-gray-300">Amount</label>
-                <input
-                  type="number"
-                  placeholder="0"
-                  className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm text-gray-300">Date</label>
-                <input
-                  type="date"
-                  className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="mt-5 flex justify-center">
-              <button
-                className="rounded-lg border border-cyan-900 bg-cyan-900/40 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-900/20 transition cursor-pointer"
-              >
-                Add transaction
-              </button>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
 }
