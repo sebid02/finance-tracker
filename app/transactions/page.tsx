@@ -60,9 +60,15 @@ export default function Transactions() {
     })
 
     function handleAddTransaction() {
+      const formattedDate = new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+
       const newTransaction = {
         id: Date.now(),
-        date,
+        date: formattedDate,
         description,
         category,
         type,
