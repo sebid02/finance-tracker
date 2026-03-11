@@ -120,6 +120,43 @@ export default function Transactions() {
       setIsModalOpen(true);
     }
 
+    function handleUpdateTransaction() {
+      if (!edit) return;
+
+      const formattedDate = new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+
+      const updatedTransaction = {
+        id: edit,
+        date: formattedDate,
+        description,
+        category,
+        type,
+        amount: Number(amount)
+      }
+
+      setTransactions(
+        transactions.map((t) => {
+          if (t.id === edit) {
+            return updatedTransaction;
+          }
+          return t;
+        })
+      )
+
+      setEdit(null);
+      setDescription("");
+      setCategory("");
+      setType("income");
+      setAmount("");
+      setDate("")
+
+      setIsModalOpen(false);
+    }
+
     return (
       <div className="py-6">
         <span className="text-lg font-bold">Transactions</span>
@@ -251,7 +288,7 @@ export default function Transactions() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
             <div className="w-full max-w-md rounded-lg border border-cyan-900/50 bg-cyan-950 p-5 shadow-lg">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">Add transaction</h2>
+                <h2 className="text-lg font-bold text-white">{edit ? "Edit transaction" : "Add transaction"}</h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="text-gray-400 hover:text-white transition cursor-pointer"
@@ -314,10 +351,10 @@ export default function Transactions() {
 
               <div className="mt-5 flex justify-center">
                 <button
-                  onClick={handleAddTransaction}
+                  onClick={edit ? handleUpdateTransaction : handleAddTransaction}
                   className="rounded-lg border border-cyan-900 bg-cyan-900/40 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-900/20 transition cursor-pointer"
                 >
-                  Add transaction
+                  {edit ? "Save changes" : "Add transaction"}
                 </button>
               </div>
             </div>
