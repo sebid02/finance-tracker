@@ -75,24 +75,22 @@ export default function Transactions() {
         day: "numeric",
         year: "numeric",
       })
+      
+      setTransactions((prevTransactions) => {
+        const newId = prevTransactions.length > 0 ? Math.max(...prevTransactions.map((t) => t.id)) + 1 : 1;
+        const newTransaction = {
+          id: newId,
+          date: formattedDate,
+          description,
+          category,
+          type,
+          amount: Number(amount)
+        }
 
-      const newTransaction = {
-        id: Date.now(),
-        date: formattedDate,
-        description,
-        category,
-        type,
-        amount: Number(amount),
-      };
-
-      setTransactions((prevTransactions) => ([newTransaction, ...prevTransactions]));
-
-      setDescription("");
-      setCategory("");
-      setType("income");
-      setAmount("");
-      setDate("");
-
+        return [newTransaction, ...prevTransactions];
+      });
+      
+      resetForm();
       setIsModalOpen(false);
     }
 
@@ -147,13 +145,7 @@ export default function Transactions() {
         })
       )
 
-      setEdit(null);
-      setDescription("");
-      setCategory("");
-      setType("income");
-      setAmount("");
-      setDate("")
-
+      resetForm();
       setIsModalOpen(false);
     }
 
