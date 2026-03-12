@@ -3,6 +3,7 @@
 import { useState } from "react";
 import TransactionsTable from "@/app/components/ui/transactions/transactions-table";
 import TransactionsFilters from "@/app/components/ui/transactions/transactions-filters";
+import TransactionsModal from "@/app/components/ui/transactions/transactions-modal";
 
 type Transaction = {
   id: number,
@@ -222,82 +223,22 @@ export default function Transactions() {
           onDelete={handleDelete}>
         </TransactionsTable>
         
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-md rounded-lg border border-cyan-900/50 bg-cyan-950 p-5 shadow-lg">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">{edit ? "Edit transaction" : "Add transaction"}</h2>
-                <button
-                  onClick={handleCloseModal}
-                  className="text-gray-400 hover:text-white transition cursor-pointer"
-                >
-                  X
-                </button>
-              </div>
-              <div className="mt-4 space-y-4">
-                <div>
-                  <label className="mb-1 block text-sm text-gray-300">Description</label>
-                  <input
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    type="text"
-                    placeholder="Enter description"
-                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-300">Category</label>
-                  <input
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    type="text"
-                    placeholder="Enter category"
-                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-300">Type</label>
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value as "income" | "expense")}
-                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                  >
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-300">Amount</label>
-                  <input
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    type="number"
-                    placeholder="0"
-                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-300">Date</label>
-                  <input
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    type="date"
-                    className="w-full rounded-lg border border-cyan-900 bg-cyan-900/50 px-3 py-2 text-sm outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-5 flex justify-center">
-                <button
-                  onClick={edit ? handleUpdateTransaction : handleAddTransaction}
-                  className="rounded-lg border border-cyan-900 bg-cyan-900/40 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-900/20 transition cursor-pointer"
-                >
-                  {edit ? "Save changes" : "Add transaction"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <TransactionsModal
+          isOpen={isModalOpen}
+          edit={edit}
+          description={description}
+          category={category}
+          type={type}
+          amount={amount}
+          date={date}
+          onClose={handleCloseModal}
+          onDescriptionChange={setDescription}
+          onCategoryChange={setCategory}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onDateChange={setDate}
+          onSubmit={edit ? handleUpdateTransaction : handleAddTransaction}
+        />
       </div>
     );
 }
