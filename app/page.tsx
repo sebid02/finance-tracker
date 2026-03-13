@@ -1,12 +1,17 @@
+import { initialTransactions } from "@/app/lib/data";
 import Separator from "@/app/components/ui/separator";
 import StatCard from "@/app/components/ui/stat-card";
 import MonthlyChart from "@/app/components/ui/dashboard/monthly-chart";
 import RecentTransactions from "@/app/components/ui/dashboard/recent-transactions";
 
+const totalIncome = initialTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+const totalExpenses = initialTransactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+const balance = totalIncome - totalExpenses;
+
 const stats = [
-  { title: "Total Income", value: "$3,000", border: "border-green-700", color: "bg-green-900/80" },
-  { title: "Total Expenses", value: "-$1,120", border: "border-red-700", color: "bg-red-900/80" },
-  { title: "Current Balance", value: "$1,880", border: "border-blue-700", color: "bg-blue-900/80" }
+  { title: "Total Income", value: `+$${totalIncome.toLocaleString()}`, border: "border-green-700", color: "bg-green-900/80" },
+  { title: "Total Expenses", value: `+$${totalExpenses.toLocaleString()}`, border: "border-red-700", color: "bg-red-900/80" },
+  { title: "Current Balance", value: `+$${balance.toLocaleString()}`, border: "border-blue-700", color: "bg-blue-900/80" }
 ]
 
 export default function Home() {
