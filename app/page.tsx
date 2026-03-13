@@ -10,8 +10,8 @@ const balance = totalIncome - totalExpenses;
 
 const stats = [
   { title: "Total Income", value: `+$${totalIncome.toLocaleString()}`, border: "border-green-700", color: "bg-green-900/80" },
-  { title: "Total Expenses", value: `+$${totalExpenses.toLocaleString()}`, border: "border-red-700", color: "bg-red-900/80" },
-  { title: "Current Balance", value: `+$${balance.toLocaleString()}`, border: "border-blue-700", color: "bg-blue-900/80" }
+  { title: "Total Expenses", value: `-$${totalExpenses.toLocaleString()}`, border: "border-red-700", color: "bg-red-900/80" },
+  { title: "Current Balance", value: `${balance >= 0 ? "+" : "-"}$${Math.abs(balance).toLocaleString()}`, border: "border-blue-700", color: "bg-blue-900/80" }
 ]
 
 export default function Home() {
