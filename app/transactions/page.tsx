@@ -7,6 +7,7 @@ import Separator from "@/app/components/ui/separator";
 import TransactionsTable from "@/app/components/ui/transactions/transactions-table";
 import TransactionsFilters from "@/app/components/ui/transactions/transactions-filters";
 import TransactionsModal from "@/app/components/ui/transactions/transactions-modal";
+import DeleteModal from "@/app/components/ui/transactions/delete-modal";
 import TransactionsPagination from "@/app/components/ui/transactions/transactions-pagination";
 
 export default function Transactions() {
@@ -18,6 +19,7 @@ export default function Transactions() {
     const [sortType, setSortType] = useState("date_desc");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [edit, setEdit] = useState<number | null>(null);
+    const [deleteId, setDeleteId] = useState<number | null>(null);
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState<"income" | "food" | "entertainment" | "bills" | "fitness" | "others">("income");
     const [type, setType] = useState<"income" | "expense">("income");
@@ -117,13 +119,7 @@ export default function Transactions() {
     }
 
     function handleDelete(id: number) {
-      if (!confirm("Are you sure you want to delete this transaction?")) {
-        return;
-      }
-
-      setTransactions(
-        transactions.filter((t) => t.id !== id)
-      )
+      setDeleteId(id);
     }
 
     function handleEdit(transaction: Transaction) {
@@ -190,6 +186,13 @@ export default function Transactions() {
       setIsModalOpen(false);
     }
 
+    function handleConfirmDelete() {
+      if (deleteId !== null) {
+        setTransactions(transactions.filter((t) => t.id !== deleteId));
+        setDeleteId(null);
+      }
+    }
+
     function resetForm() {
       setEdit(null);
       setDescription("");
@@ -242,6 +245,12 @@ export default function Transactions() {
           onAmountChange={setAmount}
           onDateChange={setDate}
           onSubmit={edit ? handleUpdateTransaction : handleAddTransaction}
+        />
+
+        <DeleteModal
+          isOpen={deleteId !== null}
+          onClose={() => setDeleteId(null)}
+          onConfirm={handleConfirmDelete}
         />
 
         {totalPages > 0 && (
