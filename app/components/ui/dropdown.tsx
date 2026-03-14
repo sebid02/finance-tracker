@@ -51,7 +51,7 @@ export default function Dropdown({ value, onChange, options, className = "", }: 
 
       {/* Menu */}
       {open && (
-        <ul className="absolute z-10 mt-1 min-w-full w-max rounded-lg border border-cyan-900 bg-cyan-950 overflow-hidden shadow-lg">
+        <ul className="absolute z-10 mt-1 right-0 md:left-0 min-w-full w-max rounded-lg border border-cyan-900 bg-cyan-950 overflow-hidden shadow-lg">
           {options.map((option) => (
             <li
               key={option.value}
