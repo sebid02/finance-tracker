@@ -7,6 +7,7 @@ import Separator from "@/app/components/ui/separator";
 import TransactionsTable from "@/app/components/ui/transactions/transactions-table";
 import TransactionsFilters from "@/app/components/ui/transactions/transactions-filters";
 import TransactionsModal from "@/app/components/ui/transactions/transactions-modal";
+import TransactionsPagination from "@/app/components/ui/transactions/transactions-pagination";
 
 export default function Transactions() {
     const [transactions, setTransactions] = useState(initialTransactions);
@@ -21,6 +22,8 @@ export default function Transactions() {
     const [type, setType] = useState<"income" | "expense">("income");
     const [amount, setAmount] = useState("");
     const [date, setDate] = useState("");
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     const filteredTransactions = transactions.filter((t) => {
       const matchesSearch = t.description.toLowerCase().includes(search.toLowerCase());
@@ -48,6 +51,23 @@ export default function Transactions() {
 
       return 0;
     })
+
+    const totalItems = filteredTransactions.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const paginatedTransactions = sortedTransactions.slice(
+      (page - 1) * ITEMS_PER_PAGE,
+      page * ITEMS_PER_PAGE
+    );
+    
+    function handleSearchChange(value: string) {
+      setSearch(value);
+      setPage(1);
+    }
+
+    function handleTypeChange(value: string) {
+      setFilterType(value);
+      setPage(1);
+    }
 
     function handleAddTransaction() {
       if (!description.trim()) {
@@ -194,8 +214,8 @@ export default function Transactions() {
             search={search}
             filterType={filterType}
             sortType={sortType}
-            onSearchChange={setSearch}
-            onFilterTypeChange={setFilterType}
+            onSearchChange={handleSearchChange}
+            onFilterTypeChange={handleTypeChange}
             onSortTypeChange={setSortType}
             onAddTransaction={() => setIsModalOpen(true)}
           />
@@ -203,7 +223,7 @@ export default function Transactions() {
 
         {/* Table */}
         <TransactionsTable
-          transactions={sortedTransactions}
+          transactions={paginatedTransactions}
           onEdit={handleEdit}
           onDelete={handleDelete}>
         </TransactionsTable>
@@ -224,6 +244,14 @@ export default function Transactions() {
           onDateChange={setDate}
           onSubmit={edit ? handleUpdateTransaction : handleAddTransaction}
         />
+
+        {totalPages > 0 && (
+          <TransactionsPagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     );
 }
