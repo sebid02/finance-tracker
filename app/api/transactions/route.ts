@@ -34,3 +34,13 @@ export async function POST(request: Request) {
     
     return NextResponse.json(data, { status: 201 });
 }
+
+export async function PUT(request: Request) {
+    const { id, date, description, category, type, amount } = await request.json();
+
+    const { data, error } = await supabase.from("transactions").update({ date, description, category, type, amount}).eq("id", id).select()
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    
+    return NextResponse.json(data, { status: 200 });
+}

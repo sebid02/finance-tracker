@@ -133,7 +133,7 @@ export default function Transactions() {
       setIsModalOpen(true);
     }
 
-    function handleUpdateTransaction() {
+    async function handleUpdateTransaction() {
       if (!edit) return;
 
       if (!description.trim()) {
@@ -151,23 +151,17 @@ export default function Transactions() {
         return;
       }
 
-      const updatedTransaction = {
-        id: edit,
-        date,
-        description,
-        category,
-        type,
-        amount: Number(amount)
-      }
+      const res = await fetch("api/transactions", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: edit, date, description, category, type, amount })
+      })
 
-      setTransactions(
-        transactions.map((t) => {
-          if (t.id === edit) {
-            return updatedTransaction;
-          }
-          return t;
-        })
-      )
+      if (res.ok) {
+        const response = await fetch("api/transactions");
+        const data = await response.json();
+        setTransactions(data);
+      }
 
       resetForm();
       setIsModalOpen(false);
