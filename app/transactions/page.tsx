@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { initialTransactions } from "@/app/lib/data";
+import { useState, useEffect } from "react";
 import { Transaction } from "@/app/types/transaction";
 import Separator from "@/app/components/ui/separator";
 import TransactionsTable from "@/app/components/ui/transactions/transactions-table";
@@ -11,7 +10,15 @@ import DeleteModal from "@/app/components/ui/transactions/delete-modal";
 import TransactionsPagination from "@/app/components/ui/transactions/transactions-pagination";
 
 export default function Transactions() {
-    const [transactions, setTransactions] = useState(initialTransactions);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+    useEffect(() => {
+      fetch("api/transactions")
+        .then(res => res.json())
+        .then(data => {
+          setTransactions(data);
+        })
+    }, []);
 
     const [search, setSearch] = useState("");
     const [filterCategory, setFilterCategory] = useState("all");
@@ -94,17 +101,11 @@ export default function Transactions() {
         return;
       }
 
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-
       setTransactions((prevTransactions) => {
         const newId = prevTransactions.length > 0 ? Math.max(...prevTransactions.map((t) => t.id)) + 1 : 1;
         const newTransaction = {
           id: newId,
-          date: formattedDate,
+          date,
           description,
           category,
           type,
@@ -129,13 +130,7 @@ export default function Transactions() {
       setCategory(transaction.category);
       setType(transaction.type);
       setAmount(String(transaction.amount));
-
-      const parsedDate = new Date(transaction.date);
-      const year = parsedDate.getFullYear();
-      const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-      const day = String(parsedDate.getDate()).padStart(2, "0");
-
-      setDate(`${year}-${month}-${day}`);
+      setDate(transaction.date);
 
       setIsModalOpen(true);
     }
@@ -158,15 +153,9 @@ export default function Transactions() {
         return;
       }
 
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-
       const updatedTransaction = {
         id: edit,
-        date: formattedDate,
+        date,
         description,
         category,
         type,

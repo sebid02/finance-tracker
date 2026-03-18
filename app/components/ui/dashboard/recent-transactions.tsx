@@ -1,7 +1,20 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Transaction } from "@/app/types/transaction";
 import Badge from "@/app/components/ui/badge";
-import { initialTransactions } from "@/app/lib/data";
 
 export default function RecentTransactions() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    fetch("api/transactions?limit=5")
+      .then(res => res.json())
+      .then(data => {
+        setTransactions(data);
+      })
+  }, []);
+
   return (
     <div className="">
       {/* Table */}
@@ -19,7 +32,7 @@ export default function RecentTransactions() {
             </thead>
 
             <tbody className="divide-y divide-cyan-900/30">
-              {initialTransactions.slice(0, 5).map((t) => {
+              {transactions.map((t) => {
                 const isIncome = t.type === "income";
                 return (
                   <tr
