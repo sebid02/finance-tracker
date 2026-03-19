@@ -1,20 +1,23 @@
-import { initialTransactions } from "@/app/lib/data";
+import { supabase } from "@/app/lib/supabaseClient";
 import Separator from "@/app/components/ui/separator";
 import StatCard from "@/app/components/ui/stat-card";
 import MonthlyChart from "@/app/components/ui/dashboard/monthly-chart";
 import RecentTransactions from "@/app/components/ui/dashboard/recent-transactions";
 
-const totalIncome = initialTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
-const totalExpenses = initialTransactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
-const balance = totalIncome - totalExpenses;
+export default async function Home() {
+  const { data } = await supabase.from("transactions").select("*");
+  const transactions = data ?? [];
 
-const stats = [
-  { title: "Total Income", value: `+$${totalIncome.toLocaleString()}`, border: "border-green-700", color: "bg-green-900/80" },
-  { title: "Total Expenses", value: `-$${totalExpenses.toLocaleString()}`, border: "border-red-700", color: "bg-red-900/80" },
-  { title: "Current Balance", value: `${balance >= 0 ? "+" : "-"}$${Math.abs(balance).toLocaleString()}`, border: "border-blue-700", color: "bg-blue-900/80" }
-]
+  const totalIncome = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+  const balance = totalIncome - totalExpenses;
 
-export default function Home() {
+  const stats = [
+    { title: "Total Income", value: `+$${totalIncome.toLocaleString()}`, border: "border-green-700", color: "bg-green-900/80" },
+    { title: "Total Expenses", value: `-$${totalExpenses.toLocaleString()}`, border: "border-red-700", color: "bg-red-900/80" },
+    { title: "Current Balance", value: `${balance >= 0 ? "+" : "-"}$${Math.abs(balance).toLocaleString()}`, border: "border-blue-700", color: "bg-blue-900/80" }
+  ]
+
   return (
     // Dashboard Content
     <div className="py-6">
