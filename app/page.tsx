@@ -8,8 +8,18 @@ export default async function Home() {
   const { data } = await supabase.from("transactions").select("*");
   const transactions = data ?? [];
 
-  const totalIncome = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  
+  const currentMonthTransactions = transactions.filter((t) => {
+    const transactionMonth = new Date(t.date).getMonth();
+    const transactionYear = new Date(t.date).getFullYear();
+    return transactionMonth === currentMonth && transactionYear === currentYear;
+  })
+
+  const totalIncome = currentMonthTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = currentMonthTransactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
   const balance = totalIncome - totalExpenses;
 
   const stats = [
