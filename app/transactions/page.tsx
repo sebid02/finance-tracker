@@ -11,12 +11,14 @@ import TransactionsPagination from "@/app/components/ui/transactions/transaction
 
 export default function Transactions() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       fetch("api/transactions")
         .then(res => res.json())
         .then(data => {
           setTransactions(data);
+          setLoading(false);
         })
     }, []);
 
@@ -196,6 +198,14 @@ export default function Transactions() {
     function handleCloseModal() {
       resetForm();
       setIsModalOpen(false);
+    }
+
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-cyan-500"/>
+        </div>
+      )
     }
 
     return (
